@@ -17,28 +17,24 @@ int test_PTRACE_SINGLESTEP(){
         struct user_regs_struct regs;
         int start = 0;
         long ins;
+        
         while(1) {
             wait(&status);
-            if(WIFEXITED(status))
+            if(WIFEXITED(status)){
                 break;
+            }
+                
             ptrace(PTRACE_GETREGS,
                    child, NULL, &regs);
-            if(start == 1) {
-                ins = ptrace(PTRACE_PEEKTEXT,
-                             child, regs.rip,
-                             NULL);
-                printf("EIP: %llx Instruction "
-                       "executed: %lx\n",
-                       regs.rip, ins);
-            }
-            if(regs.orig_rax == SYS_write) {
-                start = 1;
-                ptrace(PTRACE_SINGLESTEP, child,
-                       NULL, NULL);
-            }
-            else
-                ptrace(PTRACE_SYSCALL, child,
-                       NULL, NULL);
+            ins = ptrace(PTRACE_PEEKTEXT, child, regs.rip, NULL);
+            printf("EIP: %llx Instruction executed: %lx\n", regs.rip, ins);
+            printf("rax:%llx, rdi:%llx, rsi:%llx, rdx: %llx\n", regs.rax, regs.rdi, regs.rsi, regs.rdx);
+            printf("-------------------------------------\n");
+            ptrace(PTRACE_SINGLESTEP, child, NULL, NULL);
+
+            
+           
+                
         }
     }
     return 0;
