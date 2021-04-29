@@ -1,4 +1,4 @@
-
+.intel_syntax noprefix
 
 .data
 message:  
@@ -7,13 +7,13 @@ message:
 .text
 .globl _start
 _start:   
-          movq $1, %rax                  
-          movq  $1, %rdi                
-          movq  $message, %rsi            
-          movq  $13, %rdx               
+          mov  rax, 1                 
+          mov  rdi, 1               
+          mov  rsi, offset [message]         
+          mov rdx, 13               
           syscall                          
-          movq  $60, %rax                 
-          xorq %rdi, %rdi               
+          mov rax, 60                 
+          xor rdi, rdi               
           syscall    
 
   
